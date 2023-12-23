@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <meta name="description" content="POS - Bootstrap Admin Template">
+    <meta name="keywords"
+        content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
+    <meta name="author" content="Dreamguys - Bootstrap Admin Template">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Dreams Pos admin template</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.png">
+
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="assets/css/animate.css">
+
+    <link rel="stylesheet" href="assets/css/dataTables.bootstrap4.min.css">
+
+    <link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
+    <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
+
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+    <div id="global-loader">
+        <div class="whirly-loader"> </div>
+    </div>
+
+    <div class="main-wrapper">
+
+        <%- include('../partials/header'); -%>
+
+        <%- include('../partials/sidenavbar'); -%>
+
+        <div class="page-wrapper">
+            <div class="content">
+                <div class="page-header">
+                    <div class="page-title">
+                        <h4>Attendance List</h4>
+                        
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table  datanew">
+                        <thead>
+                            <tr>
+                                <th>Employee ID</th>
+                                <th>Name</th>
+                                <th>Attendance Date</th>
+                                <th>Punch In UTC Time</th>
+                                <th>Punch In USER Time</th>
+                                <th>Punch In Latitude</th>
+                                <th>Punch In Longitude</th>
+                                <th>Punch out UTC Time</th>
+                                <th>Punch out USER Time</th>
+                                <th>Punch out Latitude</th>
+                                <th>Punch out Longitude</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% rows.forEach((user) => { %>
+                                <tr>
+                                    <td><%= user.employee_id %></td>
+                                    <td><%= user.name %></td>
+                                    <td><%= user.utc_punchin_date %></td>
+                                    <td><%= user.punch_in_utc_time %></td>
+                                    <td><%= user.punch_in_user_time %></td>
+                                    <td><%= user.punch_in_latitude %></td>
+                                    <td><%= user.punch_in_longitude %></td>
+                                    <td><%= user.punch_out_utc_time %></td>
+                                    <td><%= user.punch_out_user_time %></td>
+                                    <td><%= user.punch_out_latitude %></td>
+                                    <td><%= user.punch_out_longitude  %></td>
+                                    <% if (user.state == 1) { %>
+                                        <td>Punch In</td>
+                                    <%} else {%>
+                                        <td>Punch Out</td>
+                                        <% } %>
+                                    <td><button>view</button></td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <script src="assets/js/jquery-3.6.0.min.js"></script>
+
+    <script src="assets/js/feather.min.js"></script>
+
+    <script src="assets/js/jquery.slimscroll.min.js"></script>
+
+    <script src="assets/js/jquery.dataTables.min.js"></script>
+    <script src="assets/js/dataTables.bootstrap4.min.js"></script>
+
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+
+    <script src="assets/plugins/apexchart/apexcharts.min.js"></script>
+    <script src="assets/plugins/apexchart/chart-data.js"></script>
+
+    <script src="assets/js/script.js"></script>
+</body>
+
+</html>
