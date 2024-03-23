@@ -14,6 +14,7 @@ const multer = require("multer");
 const path = require("path");
 const bodyParser = require('body-parser');
 const { spawn } = require('child_process');
+const geolib = require('geolib');
 
 
 
@@ -126,45 +127,17 @@ const isAuth = (req, res, next) => {
 
 console.log("Directory name:",__dirname);
 
-// app.get('/verify-face', (req, res) => {
-//     const pythonProcess = spawn('python', ['C:/Users/Dell/Desktop/30-03-23 (1)/src/verify_face.py']);
 
-//     let pythonOutput = '';
+// Define the center of the geofence
+const fenceLatitude = 12.9061902;
+const fenceLongitude = 77.5976221;
 
-//     pythonProcess.stdout.on('data', (data) => {
-//         // Accumulate the data received from the Python script
-//         pythonOutput += data.toString('utf-8');
-//     });
+// Define the radius of the geofence (in meters)
+const radius = 100; // Change the radius to 400 meters
 
-//     pythonProcess.stderr.on('data', (data) => {
-//         // Handle any errors that occur during the execution of the Python script
-//         console.error(`Error from Python script: ${data}`);
-//         res.status(500).json({ error: 'Internal server error' });
-//     });
-
-//     console.log("pythonOutput:",pythonOutput);
-//     // ...
-
-//     pythonProcess.on('close', (code) => {
-//         console.log(`Python script exited with code ${code}`);
-//         try {
-//             const startIndex = pythonOutput.indexOf('[');  // Find the start of the JSON array
-//             const jsonString = pythonOutput.slice(startIndex);  // Extract the JSON string
-//             const results = JSON.parse(jsonString);
-//             res.json({ result: results });
-//         } catch (error) {
-//             console.error(`Error parsing JSON: ${error}`);
-//             res.status(500).json({ error: 'Error parsing JSON' });
-//         }
-//     });
-
-// // ...
-
-// });
-
-// ...
-
-
+app.get('/ping', (req, res) => {
+    res.send('Pong!');
+  });
 
 app.get("/", (req,res) => {
     res.render("login",{message:req.flash('message')});
@@ -427,6 +400,27 @@ app.get("/attendancepage",isAuth, (req,res) => {
 });
 
 
+// Endpoint to check if a location is within the geofence
+app.post('/check-geofence', (req, res) => {
+    const { latitude, longitude } = req.body;
+    
+    console.log("latitude",latitude);
+    // Calculate distance between user's location and the geofence center
+    const distance = geolib.getDistance(
+      { latitude, longitude },
+      { latitude: fenceLatitude, longitude: fenceLongitude }
+    );
+  
+    console.log("distance",distance);
+    console.log("radius",radius);
+    
+    // Check if the distance is within the radius
+    const isInsideGeofence = distance <= radius;
+    
+    res.json({ withinGeofence: isInsideGeofence });
+  });
+  
+
 app.post('/punchin',upload.single('image'), async(req,res) => {
     let date_time = new Date();
 	
@@ -498,7 +492,7 @@ app.post('/punchin',upload.single('image'), async(req,res) => {
         
         
         const pythonProcess = spawn('python', [
-            'C:/Users/Dell/Desktop/30-03-23 (1)/src/verify_face.py',
+            path.dirname+'verify_face.py',
             referenceImagePath,
             punchedInImagePath
         ]);
@@ -965,12 +959,6 @@ app.get("/userdelete/:id", (req, res) => {
     res.redirect('/userdetails')
       });
   });
-
-
-
-
-
-
 
 app.get("/userdetails",isAuth, (req,res) => {
     let sql = "select users.employee_id, users.name, users.email, users.mobile, users.Is_admin from users";
